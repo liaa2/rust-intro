@@ -223,13 +223,44 @@ fn enums () {
     }
 }
 
+//32 bits
+union IntOrFloat {
+    i: i32,
+    f: f32
+}
+
+fn process_value(iof: IntOrFloat) {
+    unsafe {
+        match iof {
+            IntOrFloat {i: 42} => {
+                println!("meaning of life value");
+            }
+
+            IntOrFloat { f } => {
+                println!("value={}", f);
+            }
+        }
+    }
+}
+
+//option is the type which indicate the presence or absence of a particular value
+fn option(){
+    // Option<T>
+    let x = 3.0;
+    let y = 0.0;
+    
+    // let result = x/y; //if y is 0 then the value of result is `inf`, we could use Option to avoid this situation
+
+    //the new result is an Option of f64, Option can contain Some(z) or None
+    //Some(z) means there is an answer and the value of the answer is z
+    let result:Option<f64> = if y != 0.0 { Some(x/y) } else { None };
+    println!("{:?}", result);
+}
+
 fn main() {
-    // println!("{}", Z);
     // sh::stack_and_heap();
-    // if_statement();
-    // while_and_loop();
-    // for_loop();
-    // match_statement();
-    // structures();
-    enums();
+    // let mut iof = IntOrFloat{i: 123 };
+    // iof.i = 234;
+    // process_value(IntOrFloat{i:123})
+    option();
 }
