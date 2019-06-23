@@ -133,8 +133,103 @@ fn if_statement(){
     )
 }
 
+fn while_and_loop(){
+    let mut x = 1;
+    while x < 1000 {
+        x *= 2;
+
+        if x == 64 { continue; } // continue resume execution the loop without running code after this line
+        println!("x= {}", x);
+    }
+
+    let mut y = 1;
+    //while true
+    loop {
+        y *=2;
+        println!("y={}", y);
+
+        if y == 1 << 10 { break; }
+    }
+}
+
+fn for_loop() {
+    for x in 1..11  { // 11 in NOT included in .. operator
+        if x == 3 { continue; }
+
+        if x == 8 { break; }
+        println!("x = {}", x);
+    }
+
+    for (pos, y) in (30..41).enumerate() {
+        println!("{} : {}", pos, y);
+    }
+}
+
+fn match_statement(){
+    let country_code = 778; // 1 999
+    let country = match country_code {
+        44 => "UK",
+        46 => "Sweden",
+        7 => "Russia",
+        1...999 => "unknown", // 999 is included in ... operator
+        _ => "invalid", //if didn't match the above three numbers
+    };
+
+    println!("country with code is {}, {}", country, country_code );
+}
+
+struct Point {
+    x: f64, 
+    y: f64
+}
+
+struct Line {
+    start: Point,
+    end: Point,
+}
+
+fn structures(){
+    let p = Point{
+        x: 3.0,
+        y: 4.0
+    };
+    println!("point p is at ({}, {})", p.x, p.y);
+
+    let p2 = Point{ x:5.0, y: 10.0 };
+    let myline = Line { start: p, end: p2};
+}
+
+enum Color {
+    Red,
+    Green,
+    Blue,
+    //u8, u8, u8 is tuple format, thus can't put the name as parameters
+    RgbColor(u8, u8, u8), //tuple 
+    CmykColor{cyan: u8, magenta: u8, yellow: u8, black: u8}, //struct
+}
+
+fn enums () {
+    let c:Color = Color::CmykColor{cyan: 0, magenta: 128, yellow: 0, black: 255};
+
+    match c {
+        Color::Red => println!("r"),
+        Color::Green => println!("g"),
+        // _ => println!("some other color"),
+        Color::Blue => println!("b"),
+        Color::RgbColor(0,0,0)
+        | Color::CmykColor{cyan: _, magenta: _, yellow: _, black: 255} => println!("black"),
+        Color::RgbColor(r, g, b) => println!("rgb {}, {}, {}",r,g,b),
+        _ => ()
+    }
+}
+
 fn main() {
     // println!("{}", Z);
     // sh::stack_and_heap();
-    if_statement();
+    // if_statement();
+    // while_and_loop();
+    // for_loop();
+    // match_statement();
+    // structures();
+    enums();
 }
