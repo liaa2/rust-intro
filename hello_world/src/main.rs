@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 #![allow(unused_variable)]
 mod sh;
+mod pm;
 //import
 use std::mem;
 
@@ -247,7 +248,7 @@ fn process_value(iof: IntOrFloat) {
 fn option(){
     // Option<T>
     let x = 3.0;
-    let y = 0.0;
+    let y = 2.0;
     
     // let result = x/y; //if y is 0 then the value of result is `inf`, we could use Option to avoid this situation
 
@@ -255,6 +256,296 @@ fn option(){
     //Some(z) means there is an answer and the value of the answer is z
     let result:Option<f64> = if y != 0.0 { Some(x/y) } else { None };
     println!("{:?}", result);
+
+    match result {
+        Some(z) => println!("{}/{} = {}", x, y, z),
+        None => println!("cannot divide {} by {}", x, y)
+    }
+
+    // if let /while let - initiate variable inside condition
+    //Get the result(either Some or None, then de-structured into z)
+    //if the destructuring works(the if condition holds), then excute thing inside {} block
+    if let Some(z) = result {println!("z={}", z);}
+}
+
+fn arrays (){
+    //making a mutable variable called `a` which has 5 32 bits integers
+    let mut a:[i32;5] = [1,2,3,4,5]; //same as a = [1,2,3,4,5];
+
+    println!("a has {} elements, first is {}", a.len(), a[0]);
+    a[0] = 321;
+    println!("a[0] = {}", a[0]);
+
+    println!("{:?}", a);
+
+    if a!= [1,2,3,4,5] {
+    println!("does not match");
+    }
+
+    let b = [1; 10];//10 elements all equal to 1
+    for i in 0..b.len() {
+        println!("{}",b[i]);
+    }
+
+    println!("b took up {} bytes", mem::size_of_val(&b));
+
+    let mtx:[[f32;3];2] = [
+        [1.0, 0.0, 0.0],
+        [0.0, 2.0, 0.0],
+    ];
+    println!("{:?}", mtx);
+
+    //print diagonal
+    for i in 0..mtx.len() {
+       for j in 0..mtx[i].len() {
+           if i == j {
+               println!("mtx[{}][{}] = {}", i, j, mtx[i][j]);
+           }
+       } 
+    }
+}
+
+fn vectors(){
+    let mut a = Vec::new();
+    a.push(1);
+    a.push(2);
+    a.push(3);
+
+    println!("a = {:?}", a);
+
+    a.push(44);                        
+
+    println!("a[0] = {}", a[0]);
+
+    //Option type
+    match a.get(6) {
+        Some(x) => println!("a[6] = {}", x),
+        None => println!("No such element")
+    }
+
+    for x in &a { println!("{}", x); }
+
+    a.push(44);
+    println!("{:?}", a);
+
+    //last_elem is not 44, it is Some(44)
+    let last_elem = a.pop(); //pop() would also give you an Option
+    println!("last element is {:?}, a={:?}", last_elem, a);
+
+    //inside while condition add initiate variable, is a.pop() returns None, then the condition breaks, get out of the condition, thus won't break complier
+    while let Some(x) = a.pop() {
+        println!("{}", x);
+    }
+}
+
+//&[i32] means borrowing a part of i32
+fn use_slice(slice: &mut[i32]){ //add mutable here to change original array
+    println!("first elem ={}, len ={}", slice[0], slice.len());
+    slice[0] = 2934;
+}
+
+fn slices(){
+    let mut data = [1,2,3,4,5];
+
+    use_slice(&mut data[1..4]); //also add mutable here
+    println!("{:?}", data); // the value of data won't be the original data [1,2,3,4,5]
+}
+
+fn strings(){
+    //s is string, which is also a vector of characters - utf8 format
+    let s:&'static str = "hello there!"; // &str = string slice - a slice into string
+    //static means the entire string 'hello there!' will be included inside our program, when we reference it we reference a particular location in our program.
+
+    for c in s.chars().rev(){
+        println!("{}", c);
+    }
+
+    //safe way to get first character of string
+    if let Some(first_char) = s.chars().nth(0){
+        println!("first letter is {}", first_char);
+    }
+
+    //another way to do it - String, heap allocated construct
+    let mut letters = String::new();
+    let mut new_letters = String::new();
+    let mut a = 'a' as u8;
+    while a <= ('z' as u8){
+        letters.push(a as char);
+        letters.push_str(",");
+        a += 1;
+    }
+
+    println!("{}", letters);
+
+    // &str <> String conversion
+    let u:&str = &letters; //& - deref conversion
+    //concatentation
+    //String + str
+    let z = letters + &new_letters; // use deref here to concatenate
+
+    //How to make a string? 2 ways:
+    let mut abc = String::from("hello world");
+    abc.remove(0);
+    println!("abc is {}", abc);
+    //or 
+    let mut bce = "hello world".to_string();
+    bce.push_str("!!!");
+    println!("bce is {}", bce.replace("ello", "goodbye"));
+}
+
+//in a array, all the types have to be the same
+//tuple is a collection of values of different types
+//(i32, i32) makes a tuple
+fn sum_and_product(x:i32, y:i32) -> (i32, i32) {
+    (x+y, x*y)
+}
+
+fn tuples(){
+    let x = 3;
+    let y = 4;
+    let sp = sum_and_product(x, y);
+    println!("sp={:?}", sp);
+    println!("{0} + {1} = {2}, {0} * {1} = {3}", x, y, sp.0, sp.1);
+
+    //destructuring
+    let (a, b) = sp;
+    println!("a = {}, b ={}", a, b);
+
+    let sp2 = sum_and_product(4, 7);
+    let combined = (sp, sp2);// a tuple of tuples
+    println!("{:?}", combined);
+    println!("last elem = {}", (combined.1).1);
+
+    let ((c,d), (e,f)) = combined;
+
+    let foo = (true, 42.0, -1i8);
+    println!("foo = {:?}", foo);
+
+    let meaning = (42,); //add , inside bracket to make single element tuple, otherwise will be treated a int
+    println!("{:?}", meaning);
+}
+
+//instead of explicit listed x, y, <T> means there is a generic paramter <T>
+struct AnotherPoint<T> {
+    x: T,
+    y: T
+}
+
+struct AnotherLine<T> {
+    start: AnotherPoint<T>,
+    end: AnotherPoint<T>
+}
+
+fn generics(){
+    //we can now make any type
+    let a:AnotherPoint<f64> = AnotherPoint {x: 0.0, y: 4f64};
+    let b = AnotherPoint {x:1.2, y:3.4};
+    // or just a:AnotherPoint, rust will guess them
+
+    let myline = AnotherLine {start: a, end: b};
+}
+
+fn print_value(x:i32){
+    println!("value ={}", x);
+}
+
+fn increase(x: &mut i32){
+    //dereference the reference and increase the acual value by 1
+    *x += 1;
+}
+
+fn product(x:i32, y:i32) -> i32 {
+    x * y
+}
+
+fn functions(){
+    print_value(33);
+
+    //declared mutable variable
+    let mut z = 1;
+    //pass the mutable reference into the function
+    increase(&mut z);
+    //when execute the function, we changed the original value that we passed in, thus z is 2
+    println!("z ={}", z);
+
+    let a = 3;
+    let b = 5;
+    let p = product(a, b);
+    println!("{} * {} = {}", a, b, p);
+}
+
+//add behaviour to the structure
+impl Line {
+    //self reference to the class that we are working with 
+    fn len(&self) -> f64 {
+        let dx = self.start.x - self.end.x;
+        let dy = self.start.y - self.end.y;
+        (dx*dx+dy*dy).sqrt()
+    }
+}
+
+fn methods(){
+    let p = Point {x: 3.0, y:4.0};
+    let p2 = Point {x:1.2, y:3.4};
+    let myline = Line {start: p, end: p2};
+    println!("length = {}", myline.len());
+}
+
+fn say_hello(){println!("hello");}
+
+fn closures(){
+    let sh = say_hello;
+    sh();
+    //closure is a function that defines inline
+    // use vertical bars to delimit the actual parameters
+    let plus_one = |x:i32| -> i32 {x+1};
+    let a = 6;
+    println!("{} + 1 ={}", a, plus_one(a));
+
+    let mut two = 2;
+    //add {} around closure, as we get out of scope, everything is declared locally, inner scope gets destroyed,
+    //so we can borrow two after closure
+    {
+        let plus_two = |x| {
+            let mut z = x;
+            //two is borrowed by closure here
+            z += two;
+            z //returns z
+        };
+        println!("{} + 2 = {}", 3, plus_two(3));
+    }
+    
+    //impossible to use two here if closure has the same scope level as this line
+    let borrow_two = &mut two; //after two has been borrowed by closure, we can't use it at all
+
+    //T: by value - make a copy of the value
+    //T& - by reference
+    // &mut - by mutable reference
+    let plus_three = |x:&mut i32| *x += 3;
+    let mut f = 12;
+    plus_three(&mut f);
+    println!("f = {}", f);
+}
+
+fn is_even(x:i32) -> bool {
+    x % 2 == 0
+}
+
+//higher order function
+fn hof(){
+    let limit = 500;
+    let mut sum = 0;
+    for i in 0 .. {
+        let isq = i * i;
+        if isq > limit {break;}
+        else if is_even(isq) {sum += isq;}
+    }
+    println!("loop sum = {}", sum);
+    let sum2 = (0..).map(|x| x*x)
+        .take_while(|&x| x <= limit)
+        .filter(|x| is_even(*x))
+        .fold(0, |sum, x| sum +x);
+        println!("hof sum = {}", sum2);
 }
 
 fn main() {
@@ -262,5 +553,7 @@ fn main() {
     // let mut iof = IntOrFloat{i: 123 };
     // iof.i = 234;
     // process_value(IntOrFloat{i:123})
-    option();
+    // tuples();
+    // pm::pattern_matching();
+    hof();
 }
