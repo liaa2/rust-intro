@@ -3,6 +3,12 @@ fn main() {
 
     another_function(5);
     expression_and_statement();
+
+    let x = five();
+    println!("the value of x is {}", x);
+
+    let y = plus_one(4);
+    println!("the value of y is {}", y);
 }
 
 // we could define another_function after or before the main function. Rust doesn’t care where you define your functions, only that they’re defined somewhere.
@@ -24,5 +30,14 @@ fn expression_and_statement(){
     };
 
     println!("x={}, y={}", x, y);
+}
+
+//declare return value's type after an arrow 
+fn five() -> i32 {
+    5 // no return keyword, Rust returns the last expression implicitly
+}
+
+fn plus_one(y: i32) -> i32 {
+    y + 1
 }
  
