@@ -11,8 +11,10 @@ fn main() {
     //as if is an expression, can use it on the right ide of a let statement
     let condition = true;
     let number = if condition {
+    //NOTE: the potential to be results from each arm of the if must be the same type
         5
     } else {
+    // If the types are mismatched, we’ll get an error
         -9
     };
     println!("the value of number is {}", number);
