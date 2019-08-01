@@ -12,6 +12,23 @@ fn main() {
     let mut a = String::from("mutable");
 
     change(&mut a);
+
+    let mut b = String::from("prevent data races");
+    {
+        let r1 = &mut b;
+    } // r1 goes out of scope here, so we can make a new reference with not problems
+    let r2 = &mut b;
+
+    let mut c = String::from("mix of mutable and immutable");
+
+    let c1 = &c; //no problem
+    let c2 = &c; //no problem, multiple immutable references are okay because no one who is just reading the data has the ability to affect anyone else’s reading of the data
+
+    println!("{} and {}", c1, c2); 
+    //c1 and c2 are no longer used after this point, the reference's scope ends here
+
+    let c3 = &mut c; //no problem, these scopes don't overlap, so this code is allowed.
+    println!("{}", c3);
 }
 
 //These ampersands are references, and they allow you to refer to some value without taking ownership of it
