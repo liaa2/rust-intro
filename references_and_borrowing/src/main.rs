@@ -29,6 +29,8 @@ fn main() {
 
     let c3 = &mut c; //no problem, these scopes don't overlap, so this code is allowed.
     println!("{}", c3);
+
+    //At any given time, you can have either ONE mutable reference or any number of immutable references.
 }
 
 //These ampersands are references, and they allow you to refer to some value without taking ownership of it
