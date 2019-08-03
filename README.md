@@ -1,1 +1,1 @@
-# It's all about Rust, blah blah blah.
+It's all about Rust, blah blah blah.
